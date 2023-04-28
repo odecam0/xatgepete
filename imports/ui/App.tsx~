@@ -1,0 +1,55 @@
+import React from 'react';
+
+export const App: React.JSX.Element = () => (
+	<div className="main_layout">
+		<div className="left_part">
+			<Context_to_chat />
+		</div>
+		<div className="right_part">
+			<Chat />
+		</div>
+	</div>
+);
+
+
+
+// props not yet typed, because i've not decided yet how its gonna go
+
+interface conversation_data {
+	title: String;
+}
+
+const mock_other_conversations: Array<conversation_data> = [
+	{ title: "Primeira conversa" },
+	{ title: "Segunda conversa" },
+	{ title: "Decima quinta conversa?" }
+];
+
+const Context_to_chat: React.FC = (props) => {
+	const get_chats_buttons: React.FC = (buttoms_list): Array<React.ReactElement> => {
+		return (buttoms_list.map((p, i) => (
+			<buttom className="conversation_buttom" key={i} type='buttom'>
+				{p.title}
+			</buttom>)))
+	}
+
+	return (<div className="context_of_chat">
+		{get_chats_buttons(mock_other_conversations)}
+	</div>);
+};
+
+const Options : React.FC = (props) => {
+
+    return (
+	<div></div>
+    );
+}
+
+
+
+const Chat: React.FC = (props) => {
+    return (
+	<div className="chat">
+		<h1>"outro texto aqui"</h1>
+	</div>);
+};
