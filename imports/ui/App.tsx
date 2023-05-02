@@ -6,17 +6,13 @@ export const App: React.JSX.Element = () => (
 			<Context_to_chat />
 			<Options />
 		</div>
-		<div className="right_part">
-			<Chat />
-			<Prompt />
-		</div>
+		<ChatPrompt/>
 	</div>
 );
 
 
 
 // props not yet typed, because i've not decided yet how its gonna go
-
 interface conversation_data {
 	title: String;
 }
@@ -28,7 +24,7 @@ const mock_other_conversations: Array<conversation_data> = [
 ];
 
 const Context_to_chat: React.FC = (props) => {
-	const get_chats_buttons: React.FC = (buttoms_list): Array<React.ReactElement> => {
+	const get_chats_buttons: React.FC = (buttoms_list : Array<conversation_data>): Array<React.ReactElement> => {
 		return (buttoms_list.map((p, i) => (
 			<buttom className="conversation_buttom" key={i} type='buttom'>
 				{p.title}
@@ -51,27 +47,70 @@ const Options: React.FC = (props) => {
 }
 
 
+interface chat_messages {
+	from: 'user' | 'gpt';
+	text: String;
+}
 
-const Chat: React.FC = (props) => {
-	return (
-		<div className="chat">
-			<h1>"O chat ainda tenho que ver como que vai fazer..."</h1>
-		</div>);
-};
+const ChatPrompt : React.FC = (props) => {
+	const [messages, set_messages] = useState<Array<chat_messages>>([
+		{ from: 'user', text: 'Mensagem exemplo do usuário' }, // Initial mock data
+		{ from: 'gpt', text: 'Resposta exemplo do ChatGPT' }
+	]);
 
-const Prompt: React.FC = (props) => {
 	const [prompt_data, set_prompt_data] = useState<String>("");
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { set_prompt_data(e.target.value) };
+	const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => { set_prompt_data(e.target.value) };
+
+	const get_chat_messages = (messages_list : Array<chat_messages>) => {
+		return(messages_list.map((p, i) => {
+
+			let className = 'user_message';
+			if (p.from == 'gpt') {
+				className = 'gpt_response';
+			}
+
+			return (
+				<div key={i} className={className}>
+					<text>{p.text}</text>
+				</div>
+			);
+		}));
+	}
+
+	// Por algum motivo está reconhecendo o messages antigo, sem o imput do usuário....
+	const trigger_gpt_response = async (userPrompt:chat_messages) => {
+		const message = 'Ainda não tem o chatGPT respondendo'.split(' ');
+		let sent_message = '';
+		set_messages(messages.concat([userPrompt, {from:'gpt', text:sent_message}]));
+
+		for (let i in message) {
+			sent_message = sent_message + message[i] + ' ';
+			// set_messages(messages.slice(0, -1).concat([{from:'gpt', text:sent_message}]));
+			set_messages(messages.concat([userPrompt, {from:'gpt', text:sent_message}]));
+			await new Promise(r => setTimeout(r, 200));
+		}
+	};
+
+	const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		set_messages(messages.concat([{from:'user', text:prompt_data}]));
+		set_prompt_data('');
+
+		trigger_gpt_response({from:'user', text:prompt_data});
+	};
 
 	return (
-		<div className="prompt">
-			<form>
-				<input type='text' value={prompt_data} onChange={handleChange} />
-				<input className='submit' type='submit' value='Enviar' />
+		<div className="right_part">
+			<div className="chat">
+				{get_chat_messages(messages)}
+			</div>;
+			<form onSubmit={handleSubmit} className="prompt_container" >
+				<input className='prompt' type='text' value={prompt_data} onChange={handleChange} />
+				<input className='send_buttom' type='submit' value='Enviar' />
 			</form>
 		</div>
 	);
 }
 
-// (setq tab-width 2)
