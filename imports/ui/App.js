@@ -82,6 +82,7 @@ var Options = function (props) {
     return (react_1["default"].createElement("div", null,
         react_1["default"].createElement("buttom", { type: "buttom" }, "Op\u00E7\u00F5es")));
 };
+// TODO: manter o chat scrollado pra baixo.
 var ChatPrompt = function (props) {
     var _a = (0, react_1.useState)([
         { from: 'user', text: 'Mensagem exemplo do usuário' },
@@ -140,8 +141,9 @@ var ChatPrompt = function (props) {
         trigger_gpt_response({ from: 'user', text: prompt_data });
     };
     return (react_1["default"].createElement("div", { className: "right_part" },
-        react_1["default"].createElement("div", { className: "chat" }, get_chat_messages(messages)),
-        ";",
+        react_1["default"].createElement("div", { className: "chat" },
+            get_chat_messages(messages),
+            react_1["default"].createElement("div", { id: "anchor" })),
         react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "prompt_container" },
             react_1["default"].createElement("input", { className: 'prompt', type: 'text', value: prompt_data, onChange: handleChange }),
             react_1["default"].createElement("input", { className: 'send_buttom', type: 'submit', value: 'Enviar' }))));

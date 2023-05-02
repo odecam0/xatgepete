@@ -1,8 +1,5 @@
 ;; This file is used to log what happens between commits
 
-;; tree-sitter-mode
-;; tree-sitter-hl-mode
-
 (code-c-d "xgpt" "~/xatgepete/")
 
 ;; (find-xgptfile "")
@@ -34,31 +31,8 @@
 ;; tsc App.tsx --jsx react -w --esModuleInterop true
 
 ;; Agora na esquerda preciso fazer um flexbox com um elemento que fica no final com as opções. o
-; outro elemento ocupa o restante do container <--- DONE
 ;; , e conterá os botões para outras conversas. Este conteiner com botões para outras conversas será
 ;; outro flexbox com os item todos no inicio.
 
 ;; Na direita o conteiner também precisa ser um flexbox, com um formulário no fim.
 ;; E depois preciso dar um jeito de fazer uma caixa de mensagens escrolavel. (Não precisa ser hoje)
-
-
-
-;; Na verdade do jeito que está organizado, está assim:
-
-;; 	    - main-div
-;; 	    |
-;; 	    |\_ context-to-chat  <--- !
-;; 	    | |_ top-part
-;; 	    | |_ options-part
-;; 	    |
-;; 	    \_ chat
-
-;; Deveria ser assim:
-
-;; 	    - main-div
-;; 	    |
-;; 	    |\_ left-part
-;; 	    | |_ context-to-chat  <--- !
-;; 	    | |_ options-part
-;; 	    |
-;; 	    |_ chat

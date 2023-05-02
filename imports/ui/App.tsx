@@ -52,6 +52,7 @@ interface chat_messages {
 	text: String;
 }
 
+// TODO: manter o chat scrollado pra baixo.
 const ChatPrompt : React.FC = (props) => {
 	const [messages, set_messages] = useState<Array<chat_messages>>([
 		{ from: 'user', text: 'Mensagem exemplo do usuário' }, // Initial mock data
@@ -105,7 +106,8 @@ const ChatPrompt : React.FC = (props) => {
 		<div className="right_part">
 			<div className="chat">
 				{get_chat_messages(messages)}
-			</div>;
+				<div id="anchor"></div>
+			</div>
 			<form onSubmit={handleSubmit} className="prompt_container" >
 				<input className='prompt' type='text' value={prompt_data} onChange={handleChange} />
 				<input className='send_buttom' type='submit' value='Enviar' />
