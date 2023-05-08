@@ -61,8 +61,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.App = void 0;
 var react_1 = __importStar(require("react"));
-var App = function () { return (react_1["default"].createElement("div", { className: "main_layout" },
-    react_1["default"].createElement("div", { className: "left_part" },
+var App = function () { return (react_1["default"].createElement("div", { className: "flex h-screen" },
+    react_1["default"].createElement("div", { className: "flex flex-col items-center pt-10 pb-10 bg-sky-900" },
         react_1["default"].createElement(Context_to_chat, null),
         react_1["default"].createElement(Options, null)),
     react_1["default"].createElement(ChatPrompt, null))); };
@@ -74,13 +74,13 @@ var mock_other_conversations = [
 ];
 var Context_to_chat = function (props) {
     var get_chats_buttons = function (buttoms_list) {
-        return (buttoms_list.map(function (p, i) { return (react_1["default"].createElement("buttom", { className: "conversation_buttom", key: i, type: 'buttom' }, p.title)); }));
+        return (buttoms_list.map(function (p, i) { return (react_1["default"].createElement("buttom", { className: "bg-sky-600 border-sky-300 font-black", key: i, type: 'buttom' }, p.title)); }));
     };
-    return (react_1["default"].createElement("div", { className: "context_of_chat" }, get_chats_buttons(mock_other_conversations)));
+    return (react_1["default"].createElement("div", { className: "flex flex-col grow gap-2 px-3" }, get_chats_buttons(mock_other_conversations)));
 };
 var Options = function (props) {
     return (react_1["default"].createElement("div", null,
-        react_1["default"].createElement("buttom", { type: "buttom" }, "Op\u00E7\u00F5es")));
+        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom" }, "Op\u00E7\u00F5es")));
 };
 // TODO: manter o chat scrollado pra baixo.
 var ChatPrompt = function (props) {
@@ -92,9 +92,9 @@ var ChatPrompt = function (props) {
     var handleChange = function (e) { set_prompt_data(e.target.value); };
     var get_chat_messages = function (messages_list) {
         return (messages_list.map(function (p, i) {
-            var className = 'user_message';
+            var className = 'self-start bg-cyan-700 p-2 rounded-lg';
             if (p.from == 'gpt') {
-                className = 'gpt_response';
+                className = 'self-end bg-cyan-700 p-2 rounded-lg';
             }
             return (react_1["default"].createElement("div", { key: i, className: className },
                 react_1["default"].createElement("text", null, p.text)));
@@ -140,11 +140,11 @@ var ChatPrompt = function (props) {
         set_prompt_data('');
         trigger_gpt_response({ from: 'user', text: prompt_data });
     };
-    return (react_1["default"].createElement("div", { className: "right_part" },
-        react_1["default"].createElement("div", { className: "chat" },
+    return (react_1["default"].createElement("div", { className: "bg-cyan-400 grow flex flex-col py-3 px-2" },
+        react_1["default"].createElement("div", { className: "grow flex flex-col justify-start" },
             get_chat_messages(messages),
             react_1["default"].createElement("div", { id: "anchor" })),
-        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "prompt_container" },
-            react_1["default"].createElement("input", { className: 'prompt', type: 'text', value: prompt_data, onChange: handleChange }),
-            react_1["default"].createElement("input", { className: 'send_buttom', type: 'submit', value: 'Enviar' }))));
+        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "w-full flex gap-1" },
+            react_1["default"].createElement("input", { className: 'grow rounded-lg px-2', type: 'text', value: prompt_data, onChange: handleChange }),
+            react_1["default"].createElement("input", { className: 'w-1/12 bg-sky-200 rounded-lg p-1', type: 'submit', value: 'Enviar' }))));
 };

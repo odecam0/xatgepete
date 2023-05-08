@@ -28,7 +28,7 @@
 ;  (find-xgptfile "/client/main.css")
 (defun c () (interactive) (find-xgptfile "/client/main.css"))
 
-;; tsc App.tsx --jsx react -w --esModuleInterop true
+;;tsc App.tsx --jsx react -w --esModuleInterop true --lib ES2015,dom
 
 ;; Agora na esquerda preciso fazer um flexbox com um elemento que fica no final com as opções. o
 ;; , e conterá os botões para outras conversas. Este conteiner com botões para outras conversas será
@@ -36,3 +36,8 @@
 
 ;; Na direita o conteiner também precisa ser um flexbox, com um formulário no fim.
 ;; E depois preciso dar um jeito de fazer uma caixa de mensagens escrolavel. (Não precisa ser hoje)
+
+
+
+# (find-xgptfile "client/main-in.css")
+npx tailwindcss -i ./../../client/main-in.css  -o ./../../client/main.css --watch

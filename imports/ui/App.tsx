@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 
 export const App: React.JSX.Element = () => (
-	<div className="main_layout">
-		<div className="left_part">
+	<div className="flex h-screen">
+		<div className="flex flex-col items-center pt-10 pb-10 bg-sky-900">
 			<Context_to_chat />
 			<Options />
 		</div>
@@ -26,12 +26,12 @@ const mock_other_conversations: Array<conversation_data> = [
 const Context_to_chat: React.FC = (props) => {
 	const get_chats_buttons: React.FC = (buttoms_list : Array<conversation_data>): Array<React.ReactElement> => {
 		return (buttoms_list.map((p, i) => (
-			<buttom className="conversation_buttom" key={i} type='buttom'>
+			<buttom className="bg-sky-600 border-sky-300 font-black" key={i} type='buttom'>
 				{p.title}
 			</buttom>)))
 	}
 
-	return (<div className="context_of_chat">
+	return (<div className="flex flex-col grow gap-2 px-3">
 		{get_chats_buttons(mock_other_conversations)}
 	</div>);
 };
@@ -39,7 +39,7 @@ const Context_to_chat: React.FC = (props) => {
 const Options: React.FC = (props) => {
 	return (
 		<div>
-			<buttom type="buttom">
+			<buttom className="font-black" type="buttom">
 				Opções
 			</buttom>
 		</div>
@@ -66,9 +66,9 @@ const ChatPrompt : React.FC = (props) => {
 	const get_chat_messages = (messages_list : Array<chat_messages>) => {
 		return(messages_list.map((p, i) => {
 
-			let className = 'user_message';
+			let className = 'self-start bg-cyan-700 p-2 rounded-lg';
 			if (p.from == 'gpt') {
-				className = 'gpt_response';
+				className = 'self-end bg-cyan-700 p-2 rounded-lg';
 			}
 
 			return (
@@ -103,14 +103,14 @@ const ChatPrompt : React.FC = (props) => {
 	};
 
 	return (
-		<div className="right_part">
-			<div className="chat">
+		<div className="bg-cyan-400 grow flex flex-col py-3 px-2">
+			<div className="grow flex flex-col justify-start">
 				{get_chat_messages(messages)}
 				<div id="anchor"></div>
 			</div>
-			<form onSubmit={handleSubmit} className="prompt_container" >
-				<input className='prompt' type='text' value={prompt_data} onChange={handleChange} />
-				<input className='send_buttom' type='submit' value='Enviar' />
+			<form onSubmit={handleSubmit} className="w-full flex gap-1" >
+				<input className='grow rounded-lg px-2' type='text' value={prompt_data} onChange={handleChange} />
+				<input className='w-1/12 bg-sky-200 rounded-lg p-1' type='submit' value='Enviar' />
 			</form>
 		</div>
 	);
