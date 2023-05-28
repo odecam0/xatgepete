@@ -67,7 +67,7 @@ const Options: React.FC = (props) => {
 
 interface chat_messages {
 	from: 'user' | 'gpt';
-	text: String;
+	text: string;
 }
 
 // TODO: manter o chat scrollado pra baixo.
@@ -97,18 +97,23 @@ const ChatPrompt : React.FC = (props) => {
 		}));
 	}
 
-	// Por algum motivo está reconhecendo o messages antigo, sem o imput do usuário....
+	// So user cannot prompt anything while system is showing the gpt response
+	const [gptIsResponding, setGptIsResponding] = useState<boolean>(false);
+
 	const trigger_gpt_response = async (userPrompt:chat_messages) => {
+		setGptIsResponding(true);
+
 		const message = 'Ainda não tem o chatGPT respondendo'.split(' ');
 		let sent_message = '';
 		set_messages(messages.concat([userPrompt, {from:'gpt', text:sent_message}]));
 
 		for (let i in message) {
 			sent_message = sent_message + message[i] + ' ';
-			// set_messages(messages.slice(0, -1).concat([{from:'gpt', text:sent_message}]));
 			set_messages(messages.concat([userPrompt, {from:'gpt', text:sent_message}]));
 			await new Promise(r => setTimeout(r, 200));
 		}
+
+		setGptIsResponding(false);
 	};
 
 	const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
@@ -127,8 +132,8 @@ const ChatPrompt : React.FC = (props) => {
 				<div id="anchor"></div>
 			</div>
 			<form onSubmit={handleSubmit} className="w-full flex gap-1" >
-				<input className='grow rounded-lg px-2' type='text' value={prompt_data} onChange={handleChange} />
-				<input className='w-1/12 bg-sky-200 rounded-lg p-1' type='submit' value='Enviar' />
+				<input className='grow rounded-lg px-2' type='text' value={prompt_data} onChange={handleChange} disabled={gptIsResponding}/>
+				<input className='w-1/12 bg-sky-200 rounded-lg p-1' type='submit' value='Enviar' disabled={gptIsResponding}/>
 			</form>
 		</div>
 	);

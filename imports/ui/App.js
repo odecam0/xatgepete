@@ -110,12 +110,14 @@ var ChatPrompt = function (props) {
                 react_1["default"].createElement("text", null, p.text)));
         }));
     };
-    // Por algum motivo está reconhecendo o messages antigo, sem o imput do usuário....
+    // So user cannot prompt anything while system is showing the gpt response
+    var _c = (0, react_1.useState)(false), gptIsResponding = _c[0], setGptIsResponding = _c[1];
     var trigger_gpt_response = function (userPrompt) { return __awaiter(void 0, void 0, void 0, function () {
         var message, sent_message, _a, _b, _c, _i, i;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
+                    setGptIsResponding(true);
                     message = 'Ainda não tem o chatGPT respondendo'.split(' ');
                     sent_message = '';
                     set_messages(messages.concat([userPrompt, { from: 'gpt', text: sent_message }]));
@@ -131,7 +133,6 @@ var ChatPrompt = function (props) {
                     if (!(_c in _a)) return [3 /*break*/, 3];
                     i = _c;
                     sent_message = sent_message + message[i] + ' ';
-                    // set_messages(messages.slice(0, -1).concat([{from:'gpt', text:sent_message}]));
                     set_messages(messages.concat([userPrompt, { from: 'gpt', text: sent_message }]));
                     return [4 /*yield*/, new Promise(function (r) { return setTimeout(r, 200); })];
                 case 2:
@@ -140,7 +141,9 @@ var ChatPrompt = function (props) {
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
-                case 4: return [2 /*return*/];
+                case 4:
+                    setGptIsResponding(false);
+                    return [2 /*return*/];
             }
         });
     }); };
@@ -155,6 +158,6 @@ var ChatPrompt = function (props) {
             get_chat_messages(messages),
             react_1["default"].createElement("div", { id: "anchor" })),
         react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "w-full flex gap-1" },
-            react_1["default"].createElement("input", { className: 'grow rounded-lg px-2', type: 'text', value: prompt_data, onChange: handleChange }),
-            react_1["default"].createElement("input", { className: 'w-1/12 bg-sky-200 rounded-lg p-1', type: 'submit', value: 'Enviar' }))));
+            react_1["default"].createElement("input", { className: 'grow rounded-lg px-2', type: 'text', value: prompt_data, onChange: handleChange, disabled: gptIsResponding }),
+            react_1["default"].createElement("input", { className: 'w-1/12 bg-sky-200 rounded-lg p-1', type: 'submit', value: 'Enviar', disabled: gptIsResponding }))));
 };
