@@ -60,12 +60,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.App = void 0;
+var meteor_1 = require("meteor/meteor");
+var react_meteor_data_1 = require("meteor/react-meteor-data");
 var react_1 = __importStar(require("react"));
-var App = function () { return (react_1["default"].createElement("div", { className: "flex h-screen" },
-    react_1["default"].createElement("div", { className: "flex flex-col items-center pt-10 pb-10 bg-sky-900" },
-        react_1["default"].createElement(Context_to_chat, null),
-        react_1["default"].createElement(Options, null)),
-    react_1["default"].createElement(ChatPrompt, null))); };
+var SignInAndUp_1 = require("./SignInAndUp");
+var App = function () {
+    var user = (0, react_meteor_data_1.useTracker)(function () { return meteor_1.Meteor.user(); });
+    return (react_1["default"].createElement("div", { className: "flex h-screen" }, user ?
+        react_1["default"].createElement("div", { className: "flex grow h-full" },
+            react_1["default"].createElement("div", { className: "flex flex-col items-center pt-10 pb-10 bg-sky-900" },
+                react_1["default"].createElement(Context_to_chat, null),
+                react_1["default"].createElement(Options, null)),
+            react_1["default"].createElement(ChatPrompt, null))
+        :
+            react_1["default"].createElement(SignInAndUp_1.SignInForm, null)));
+};
 exports.App = App;
 var mock_other_conversations = [
     { title: "Primeira conversa" },
@@ -79,8 +88,9 @@ var Context_to_chat = function (props) {
     return (react_1["default"].createElement("div", { className: "flex flex-col grow gap-2 px-3" }, get_chats_buttons(mock_other_conversations)));
 };
 var Options = function (props) {
-    return (react_1["default"].createElement("div", null,
-        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom" }, "Op\u00E7\u00F5es")));
+    return (react_1["default"].createElement("div", { className: "flex" },
+        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom" }, "Op\u00E7\u00F5es"),
+        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom", onClick: function () { return meteor_1.Meteor.logout(); } }, "Desconectar-se")));
 };
 // TODO: manter o chat scrollado pra baixo.
 var ChatPrompt = function (props) {

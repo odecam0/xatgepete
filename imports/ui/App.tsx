@@ -1,14 +1,29 @@
+import { Meteor } from 'meteor/meteor';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, {useState} from 'react';
 
-export const App: React.JSX.Element = () => (
-	<div className="flex h-screen">
-		<div className="flex flex-col items-center pt-10 pb-10 bg-sky-900">
-			<Context_to_chat />
-			<Options />
+import { SignInForm } from './SignInAndUp';
+
+export const App: React.JSX.Element = () => {
+	const user = useTracker(() => Meteor.user());
+
+	return (
+		<div className="flex h-screen">
+			{
+				user ?
+					<div className="flex grow h-full">
+						<div className="flex flex-col items-center pt-10 pb-10 bg-sky-900">
+							<Context_to_chat />
+							<Options />
+						</div>
+						<ChatPrompt />
+					</div>
+					:
+					<SignInForm />
+			}
 		</div>
-		<ChatPrompt/>
-	</div>
-);
+	);
+};
 
 
 
@@ -38,9 +53,12 @@ const Context_to_chat: React.FC = (props) => {
 
 const Options: React.FC = (props) => {
 	return (
-		<div>
+		<div className="flex">
 			<buttom className="font-black" type="buttom">
 				Opções
+			</buttom>
+			<buttom className="font-black" type="buttom" onClick={() => Meteor.logout()}>
+				Desconectar-se
 			</buttom>
 		</div>
 	);

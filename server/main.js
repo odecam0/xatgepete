@@ -1,9 +1,16 @@
 import { Meteor } from 'meteor/meteor';
-import { LinksCollection } from '/imports/api/links';
+import { Accounts } from 'meteor/accounts-base';
 
-async function insertLink({ title, url }) {
-  await LinksCollection.insertAsync({ title, url, createdAt: new Date() });
-}
+Meteor.methods({
+  registerAccount(username, password) {
+    if (!Accounts.findUserByUsername(username)) {
+      Accounts.createUser({
+        username: username,
+        password: password,
+      })
+    }
+  }
+});
 
 Meteor.startup(async () => {
   // If the Links collection is empty, add some data.

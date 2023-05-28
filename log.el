@@ -37,7 +37,9 @@
 ;; Na direita o conteiner também precisa ser um flexbox, com um formulário no fim.
 ;; E depois preciso dar um jeito de fazer uma caixa de mensagens escrolavel. (Não precisa ser hoje)
 
+;; https://cloud-guide.meteor.com/deploy-command-line.html
 
-
-# (find-xgptfile "client/main-in.css")
-npx tailwindcss -i ./../../client/main-in.css  -o ./../../client/main.css --watch
+;; # (find-xgptfile "client/main-in.css")
+;; npx tailwindcss -i ./../../client/main-in.css  -o ./../../client/main.css --watch
+;;
+;  DEPLOY_HOSTNAME=galaxy.meteor.com meteor deploy xatgepete.meteorapp.com --free --mongo
