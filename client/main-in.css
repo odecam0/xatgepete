@@ -4,7 +4,6 @@
 
 body {
     min-height: calc(100vh - 18px) ;
-    background-color: #F8EDE3;
 }
 
 .main_layout {
@@ -71,7 +70,6 @@ buttom {
     border-radius: 10px;
     border-style: solid;
     border-width: 3px;
-    background-color: #F8EDE3;
 }
 
 textarea, input { outline: none; }
@@ -92,7 +90,6 @@ input {
 .user_message {
     align-self: flex-start;
     border-radius: 10px;
-    background-color: #9F8772;
     padding: 10px;
     overflow-anchor: none;
 }
@@ -100,7 +97,6 @@ input {
 .gpt_response {
     align-self: flex-end;
     border-radius: 10px;
-    background-color: #9F8772;
     padding: 10px;
     overflow-anchor: none;
 }

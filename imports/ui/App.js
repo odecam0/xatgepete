@@ -63,101 +63,106 @@ exports.App = void 0;
 var meteor_1 = require("meteor/meteor");
 var react_meteor_data_1 = require("meteor/react-meteor-data");
 var react_1 = __importStar(require("react"));
+var mongo_1 = require("meteor/mongo");
 var SignInAndUp_1 = require("./SignInAndUp");
+var Contexts = new mongo_1.Mongo.Collection('Contexts');
+var Messages = new mongo_1.Mongo.Collection('Messages');
 var App = function () {
     var user = (0, react_meteor_data_1.useTracker)(function () { return meteor_1.Meteor.user(); });
     return (react_1["default"].createElement("div", { className: "flex h-screen" }, user ?
-        react_1["default"].createElement("div", { className: "flex grow h-full" },
-            react_1["default"].createElement("div", { className: "flex flex-col items-center pt-10 pb-10 bg-sky-900" },
-                react_1["default"].createElement(Context_to_chat, null),
-                react_1["default"].createElement(Options, null)),
-            react_1["default"].createElement(ChatPrompt, null))
+        react_1["default"].createElement(Chat, null)
         :
             react_1["default"].createElement(SignInAndUp_1.SignInForm, null)));
 };
 exports.App = App;
-var mock_other_conversations = [
-    { title: "Primeira conversa" },
-    { title: "Segunda conversa" },
-    { title: "Decima quinta conversa?" }
-];
-var Context_to_chat = function (props) {
-    var get_chats_buttons = function (buttoms_list) {
-        return (buttoms_list.map(function (p, i) { return (react_1["default"].createElement("buttom", { className: "bg-sky-600 border-sky-300 font-black", key: i, type: 'buttom' }, p.title)); }));
+var Chat = function (props) {
+    var context_list = (0, react_meteor_data_1.useTracker)(function () {
+        meteor_1.Meteor.subscribe('contexts');
+        return Contexts.find({}).fetch();
+    });
+    var _a = (0, react_1.useState)(''), currentContext = _a[0], setCurrentContext = _a[1];
+    var _b = (0, react_1.useState)(-1), currentContextIndex = _b[0], setCurrentContextIndex = _b[1];
+    // A ideia do callback que selecionará o contexto atual será a seguinte:
+    // considerando que a ordem dos botões de contexto renderizados no componente
+    // será a mesma em que os objetos de contexto estão organizados em context_list
+    // o atributo key do botão será usado como indice para selecionar o contexto
+    // correto na array context_list
+    var selectCurrentContextFromButtom = function (i) {
+        setCurrentContext(context_list[i]._id);
+        setCurrentContextIndex(i);
     };
-    return (react_1["default"].createElement("div", { className: "flex flex-col grow gap-2 px-3" }, get_chats_buttons(mock_other_conversations)));
+    return (react_1["default"].createElement("div", { className: "flex grow h-full" },
+        react_1["default"].createElement("div", { className: "flex flex-col items-center pt-10 pb-10 bg-white gap-5 mx-5" },
+            react_1["default"].createElement(Context_to_chat, { className: "grow", context_list: context_list, context_index: currentContextIndex, onClick: selectCurrentContextFromButtom }),
+            react_1["default"].createElement("div", { className: "border-b-2 border-slate-300 w-full" }),
+            react_1["default"].createElement(Options, null)),
+        react_1["default"].createElement("div", { className: "border-l-2 border-slate-300 my-10" }),
+        react_1["default"].createElement(ChatPrompt, { currentContext: currentContext })));
+};
+var Context_to_chat = function (props) {
+    var buttons_style = "bg-white rounded-xl py-1 px-3 border-black border-2 border-dashed";
+    var buttons_style_selected = "bg-white rounded-xl py-1 px-3 border-black border-2 border-solyd";
+    var handleClickNovoChat = function () {
+        meteor_1.Meteor.call('createNewContext');
+    };
+    return (react_1["default"].createElement("div", { className: "flex flex-col grow gap-2 px-3" },
+        props.context_list.map(function (p, i) { return (react_1["default"].createElement("button", { className: (i == props.context_index) ? buttons_style_selected : buttons_style, key: i, type: 'button', onClick: function () { return props.onClick(i); } }, p.title)); }),
+        react_1["default"].createElement("button", { className: "bg-white rounded-xl py-1 px-3 border-black border-b-2 border-solid", type: 'button', onClick: handleClickNovoChat }, "Criar novo chat")));
 };
 var Options = function (props) {
-    return (react_1["default"].createElement("div", { className: "flex" },
-        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom" }, "Op\u00E7\u00F5es"),
-        react_1["default"].createElement("buttom", { className: "font-black", type: "buttom", onClick: function () { return meteor_1.Meteor.logout(); } }, "Desconectar-se")));
+    var buttons_style = "bg-white rounded-xl py-1 px-3 border-black border-2";
+    return (react_1["default"].createElement("div", { className: "flex flex-col gap-2" },
+        react_1["default"].createElement("button", { className: buttons_style, type: "button" }, "Op\u00E7\u00F5es"),
+        react_1["default"].createElement("button", { className: buttons_style, type: "button", onClick: function () { return meteor_1.Meteor.logout(); } }, "Desconectar-se")));
 };
 // TODO: manter o chat scrollado pra baixo.
 var ChatPrompt = function (props) {
-    var _a = (0, react_1.useState)([
-        { from: 'user', text: 'Mensagem exemplo do usuário' },
-        { from: 'gpt', text: 'Resposta exemplo do ChatGPT' }
-    ]), messages = _a[0], set_messages = _a[1];
-    var _b = (0, react_1.useState)(""), prompt_data = _b[0], set_prompt_data = _b[1];
+    var messages = (0, react_meteor_data_1.useTracker)(function () {
+        meteor_1.Meteor.subscribe('messages', props.currentContext);
+        return Messages.find({}).fetch();
+    });
+    var _a = (0, react_1.useState)(""), prompt_data = _a[0], set_prompt_data = _a[1];
     var handleChange = function (e) { set_prompt_data(e.target.value); };
     var get_chat_messages = function (messages_list) {
         return (messages_list.map(function (p, i) {
-            var className = 'self-start bg-cyan-700 p-2 rounded-lg';
+            var className = 'self-start bg-white border-l-2 border-black pl-3';
             if (p.from == 'gpt') {
-                className = 'self-end bg-cyan-700 p-2 rounded-lg';
+                className = 'self-end bg-white border-r-2 border-black pr-3';
             }
             return (react_1["default"].createElement("div", { key: i, className: className },
                 react_1["default"].createElement("text", null, p.text)));
         }));
     };
     // So user cannot prompt anything while system is showing the gpt response
-    var _c = (0, react_1.useState)(false), gptIsResponding = _c[0], setGptIsResponding = _c[1];
-    var trigger_gpt_response = function (userPrompt) { return __awaiter(void 0, void 0, void 0, function () {
-        var message, sent_message, _a, _b, _c, _i, i;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    setGptIsResponding(true);
-                    message = 'Ainda não tem o chatGPT respondendo'.split(' ');
-                    sent_message = '';
-                    set_messages(messages.concat([userPrompt, { from: 'gpt', text: sent_message }]));
-                    _a = message;
-                    _b = [];
-                    for (_c in _a)
-                        _b.push(_c);
-                    _i = 0;
-                    _d.label = 1;
-                case 1:
-                    if (!(_i < _b.length)) return [3 /*break*/, 4];
-                    _c = _b[_i];
-                    if (!(_c in _a)) return [3 /*break*/, 3];
-                    i = _c;
-                    sent_message = sent_message + message[i] + ' ';
-                    set_messages(messages.concat([userPrompt, { from: 'gpt', text: sent_message }]));
-                    return [4 /*yield*/, new Promise(function (r) { return setTimeout(r, 200); })];
-                case 2:
-                    _d.sent();
-                    _d.label = 3;
-                case 3:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 4:
-                    setGptIsResponding(false);
-                    return [2 /*return*/];
-            }
+    var _b = (0, react_1.useState)(false), gptIsResponding = _b[0], setGptIsResponding = _b[1];
+    // Ui, aqui vai ser complicado de adaptar pro database.
+    // Penso que devo manter a mesma lógica, porem apenas dar um update no banco de dados
+    var trigger_gpt_response = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            setGptIsResponding(true);
+            meteor_1.Meteor.call('insertGPTMessageInContext', props.currentContext, function () { return (setGptIsResponding(false)); });
+            return [2 /*return*/];
         });
     }); };
     var handleSubmit = function (e) {
         e.preventDefault();
-        set_messages(messages.concat([{ from: 'user', text: prompt_data }]));
+        // Caso não haja mensagem nenhuma, atualiza o nome do contexto
+        // para as 16 primeiras letras da primeira pergunta
+        if (messages.length == 0) {
+            meteor_1.Meteor.call('updateContextName', props.currentContext, prompt_data.slice(0, 16));
+        }
+        meteor_1.Meteor.call('insertMessageInContext', { from: 'user', text: prompt_data }, props.currentContext);
         set_prompt_data('');
-        trigger_gpt_response({ from: 'user', text: prompt_data });
+        trigger_gpt_response();
     };
-    return (react_1["default"].createElement("div", { className: "bg-cyan-400 grow flex flex-col py-3 px-2" },
-        react_1["default"].createElement("div", { className: "grow flex flex-col justify-start" },
+    var canPrompt = function () {
+        return (!gptIsResponding && (props.currentContext != ''));
+    };
+    return (react_1["default"].createElement("div", { className: "bg-white grow flex flex-col pt-8 pb-4 px-2" },
+        react_1["default"].createElement("div", { className: "grow flex flex-col justify-start gap-5" },
             get_chat_messages(messages),
             react_1["default"].createElement("div", { id: "anchor" })),
-        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "w-full flex gap-1" },
-            react_1["default"].createElement("input", { className: 'grow rounded-lg px-2', type: 'text', value: prompt_data, onChange: handleChange, disabled: gptIsResponding }),
-            react_1["default"].createElement("input", { className: 'w-1/12 bg-sky-200 rounded-lg p-1', type: 'submit', value: 'Enviar', disabled: gptIsResponding }))));
+        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "w-full flex gap-6" },
+            react_1["default"].createElement("input", { className: 'grow px-2 border-solid border-b-2 border-black bg-white', type: 'text', value: prompt_data, onChange: handleChange, disabled: !canPrompt() }),
+            react_1["default"].createElement("input", { className: 'w-1/12 bg-white rounded-lg p-2 border-black border-2', type: 'submit', value: 'Enviar', disabled: !canPrompt() }))));
 };

@@ -31,7 +31,7 @@ export const SignInForm : React.FC = (props) => {
             setErrorMessage('Houve um erro ao tentar conectar com este usuário e senha.');
             setUsername('');
             setPassword('');
-        }
+        })
     }
 
     const text_input_style = "bg-inherit border-b-2 border-black"
