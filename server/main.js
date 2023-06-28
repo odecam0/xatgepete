@@ -2,16 +2,90 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { Mongo } from 'meteor/mongo';
 
+// Login services configuration
+import { ServiceConfiguration  } from 'meteor/service-configuration';
+//
+ServiceConfiguration.configurations.upsert(
+  { service: 'google' },
+  {
+    $set: {
+      loginStyle: "popup",
+      clientId: "580136785210-b28q5mtpv68pfkov8ocjcaifoe7quas3.apps.googleusercontent.com",
+      secret: "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"
+    }
+  }
+);
+
+console.log(process.env.ROOT_URL);
+
 const Contexts = new Mongo.Collection('Contexts');
 const Messages = new Mongo.Collection('Messages');
 
+import nodemailer from "nodemailer";
+const Emails = new Mongo.Collection('Emails');
+transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'xatgepete.autenticator@gmail.com',
+    pass: 'ndviqagjrundzfdp'
+  }
+});
+
 Meteor.methods({
-  registerAccount(username, password) {
+  registerAccount(username, email, password) {
     if (!Accounts.findUserByUsername(username)) {
       Accounts.createUser({
         username: username,
         password: password,
+        email: email
       })
+    }
+  },
+  checkIfEmailExists(email) {
+    if (Accounts.findUserByEmail(email)) {
+      return(true);
+    }
+    return(false);
+  },
+  sendEmail(email){
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVXZabcdefghijklmnopqrstuvxz0123456789'
+    let randomCode = ''
+    for (let i=0; i<10; i++){
+      randomCode+=characters.charAt(Math.floor(Math.random() * characters.length))
+    }
+
+    transporter.sendMail({
+      from: 'xatgepete.autenticator@gmail.com',
+      to: email,
+      subject: "Verificação de email do Xatgepete",
+      text: randomCode
+    }, (error, info) => {
+      if (error) {
+        console.log(error, info);
+      } else {
+        console.log(info);
+      }
+    })
+
+    Emails.insert({email: email, code: randomCode}, async (error, id) => {
+      if (!error) {
+        await new Promise(r => setTimeout(r, 1000 * 60 * 5));
+
+        Emails.remove({_id: id})
+      }
+    })
+  },
+  checkEmailCode(email, emailCode){
+    const emails = Emails.find({email: email}).fetch()
+
+    if ( emails.length > 0 ) {
+      if (emails[0].code == emailCode) {
+        return("success");
+      } else {
+        return("failed");
+      }
+    } else {
+      return("timedout");
     }
   },
   createNewContext() {
@@ -36,7 +110,6 @@ Meteor.methods({
       await new Promise(r => setTimeout(r, 200));
     }
   },
-  // Por algum motivo não está atualizando o nome do contexto
   updateContextName(currentContext, newName) {
     Contexts.update({_id:currentContext} , {$set: {title: newName}});
   }
