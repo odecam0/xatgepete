@@ -287,21 +287,22 @@ const CheckEmailCodeForm : React.FC = ( props : CheckEmailProps ) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsLoading(true);
-        Meteor.call('checkEmailCode', props.email, emailCode, (error, result : 'success' | 'failed' | 'timedout') => {
-            if (!error) {
-                if (result == 'success') {
-                    props.finishChecking(true);
-                } else if ( result == 'timedout') {
-                    props.finishChecking(false);
+        Meteor.call('checkEmailCode', props.email, emailCode,
+            (error, result: 'success' | 'failed' | 'timedout') => {
+                if (!error) {
+                    if (result == 'success') {
+                        props.finishChecking(true);
+                    } else if (result == 'timedout') {
+                        props.finishChecking(false);
+                    } else {
+                        setErrorMessage("Este não é o código correto");
+                        setEmailCode('');
+                    }
                 } else {
-                    setErrorMessage("Este não é o código correto");
+                    setErrorMessage("Houve um erro no servidor")
                     setEmailCode('');
                 }
-            } else {
-                setErrorMessage("Houve um erro no servidor")
-                setEmailCode('');
-            }
-        });
+            });
         setIsLoading(false);
     }
 

@@ -10,7 +10,6 @@ interface chat_messages {
 	text: string;
 }
 
-// TODO: manter o chat scrollado pra baixo.
 export const ChatPrompt : React.FC = (props) => {
 	const messages = useTracker(() => {
 		Meteor.subscribe('messages', props.currentContext);
@@ -67,16 +66,18 @@ export const ChatPrompt : React.FC = (props) => {
 		return (!gptIsResponding && (props.currentContext != ''))
 	}
 
+	// Return that renders
+	// sm:h-screen is related to mediaquery on Chat.tsx
 	return (
-		<div className="bg-white grow flex flex-col pt-8 pb-4 px-2">
-			<div className="grow flex flex-col justify-start gap-5">
+		<div className={"bg-white grow flex flex-col pt-8 pb-4 px-2 h-1/2 sm:h-screen"}>
+			<div className="grow flex flex-col justify-start gap-5 break-all overflow-y-auto h-1/2">
 				{get_chat_messages(messages)}
 				<div id="anchor"></div>
 			</div>
-			<form onSubmit={handleSubmit} className="w-full flex gap-6" >
-				<input className='grow px-2 border-solid border-b-2 border-black bg-white'
+			<form onSubmit={handleSubmit} className="flex w-full flex-col gap-3" >
+				<input className='grow px-2 border-solid border-b-2 border-black bg-white w-full'
 					type='text' value={prompt_data} onChange={handleChange} disabled={!canPrompt()} />
-				<input className='w-1/12 bg-white rounded-lg p-2 border-black border-2'
+				<input className='bg-white rounded-lg p-2 border-black border-2 self-center w-fit'
 					type='submit' value='Enviar' disabled={!canPrompt()} />
 			</form>
 		</div>

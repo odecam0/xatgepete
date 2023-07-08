@@ -65,7 +65,6 @@ var meteor_1 = require("meteor/meteor");
 var react_meteor_data_1 = require("meteor/react-meteor-data");
 var mongo_1 = require("meteor/mongo");
 var Messages = new mongo_1.Mongo.Collection('Messages');
-// TODO: manter o chat scrollado pra baixo.
 var ChatPrompt = function (props) {
     var messages = (0, react_meteor_data_1.useTracker)(function () {
         meteor_1.Meteor.subscribe('messages', props.currentContext);
@@ -108,12 +107,14 @@ var ChatPrompt = function (props) {
     var canPrompt = function () {
         return (!gptIsResponding && (props.currentContext != ''));
     };
-    return (react_1["default"].createElement("div", { className: "bg-white grow flex flex-col pt-8 pb-4 px-2" },
-        react_1["default"].createElement("div", { className: "grow flex flex-col justify-start gap-5" },
+    // Return that renders
+    // sm:h-screen is related to mediaquery on Chat.tsx
+    return (react_1["default"].createElement("div", { className: "bg-white grow flex flex-col pt-8 pb-4 px-2 h-1/2 sm:h-screen" },
+        react_1["default"].createElement("div", { className: "grow flex flex-col justify-start gap-5 break-all overflow-y-auto h-1/2" },
             get_chat_messages(messages),
             react_1["default"].createElement("div", { id: "anchor" })),
-        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "w-full flex gap-6" },
-            react_1["default"].createElement("input", { className: 'grow px-2 border-solid border-b-2 border-black bg-white', type: 'text', value: prompt_data, onChange: handleChange, disabled: !canPrompt() }),
-            react_1["default"].createElement("input", { className: 'w-1/12 bg-white rounded-lg p-2 border-black border-2', type: 'submit', value: 'Enviar', disabled: !canPrompt() }))));
+        react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "flex w-full flex-col gap-3" },
+            react_1["default"].createElement("input", { className: 'grow px-2 border-solid border-b-2 border-black bg-white w-full', type: 'text', value: prompt_data, onChange: handleChange, disabled: !canPrompt() }),
+            react_1["default"].createElement("input", { className: 'bg-white rounded-lg p-2 border-black border-2 self-center w-fit', type: 'submit', value: 'Enviar', disabled: !canPrompt() }))));
 };
 exports.ChatPrompt = ChatPrompt;
