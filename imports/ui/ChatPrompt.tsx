@@ -69,7 +69,7 @@ export const ChatPrompt : React.FC = (props) => {
 	// Return that renders
 	// sm:h-screen is related to mediaquery on Chat.tsx
 	return (
-		<div className={"bg-white grow flex flex-col pt-8 pb-4 px-2 h-1/2 sm:h-screen"}>
+			<>
 			<div className="grow flex flex-col justify-start gap-5 break-all overflow-y-auto h-1/2">
 				{get_chat_messages(messages)}
 				<div id="anchor"></div>
@@ -80,6 +80,6 @@ export const ChatPrompt : React.FC = (props) => {
 				<input className='bg-white rounded-lg p-2 border-black border-2 self-center w-fit'
 					type='submit' value='Enviar' disabled={!canPrompt()} />
 			</form>
-		</div>
+			</>
 	);
 }

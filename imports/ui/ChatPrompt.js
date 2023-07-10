@@ -109,7 +109,7 @@ var ChatPrompt = function (props) {
     };
     // Return that renders
     // sm:h-screen is related to mediaquery on Chat.tsx
-    return (react_1["default"].createElement("div", { className: "bg-white grow flex flex-col pt-8 pb-4 px-2 h-1/2 sm:h-screen" },
+    return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement("div", { className: "grow flex flex-col justify-start gap-5 break-all overflow-y-auto h-1/2" },
             get_chat_messages(messages),
             react_1["default"].createElement("div", { id: "anchor" })),

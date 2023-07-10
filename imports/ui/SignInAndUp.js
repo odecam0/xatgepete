@@ -68,6 +68,7 @@ var meteor_1 = require("meteor/meteor");
 var react_loading_1 = __importDefault(require("react-loading"));
 var accounts_base_1 = require("meteor/accounts-base");
 var react_meteor_data_1 = require("meteor/react-meteor-data");
+var icons8_google_1 = require("../../icons/icons8-google");
 // Este componente possuirá 3 telas possíveis:
 //  O formulário para login
 //  O formuĺário para registro
@@ -299,5 +300,7 @@ var LoginWithGoogle = function () {
     };
     var serviceOn = (0, react_meteor_data_1.useTracker)(function () { return accounts_base_1.Accounts.loginServicesConfigured(); });
     return (react_1["default"].createElement(react_1["default"].Fragment, null, serviceOn ?
-        react_1["default"].createElement("button", { type: "button", className: "border-solid border-black border-2 p-4 rounded-lg", onClick: handleLogin }, "Conecte-se usando o Google") : react_1["default"].createElement("div", null)));
+        react_1["default"].createElement("button", { type: "button", className: "border-solid border-black border-2 p-4 rounded-lg flex gap-5 items-center", onClick: handleLogin },
+            "Conecte-se usando o Google ",
+            react_1["default"].createElement(icons8_google_1.ReactComponent, { className: "self-end" })) : react_1["default"].createElement("div", null)));
 };

@@ -64,8 +64,10 @@ export const Chat: React.FC = () => {  // O chat será exibido caso haja uma
 
 	// Os estilos para as tags de JSX utilizando tailwindCSS
 	const outer_div = "flex grow h-full";
-	const left_div = "flex flex-col items-center pt-5 pb-5 bg-white gap-5 mx-5 h-full";
-	const right_div = "border-l-2 border-slate-300 my-10";
+	const left_div =  "xl:w-1/6 sm:w-2/6 w-5/6 flex flex-col items-center pb-5 bg-white gap-5 mx-5 h-full ";
+	const right_div = "xl:w-5/6 sm:w-4/6 w-5/6 bg-white flex flex-col pt-8 pb-4 px-2 h-[90%] sm:h-full";
+	const right_div_full = "sm:w-full w-5/6 bg-white flex flex-col pt-8 pb-4 px-2 h-[90%] sm:h-full";
+	const vertical_border = "border-l-2 border-slate-300 my-10";
 	const border = "border-b-2 border-slate-300 w-full";
 
 	// O componente Context_to_chat recebe a lista de contextos (context_list)
@@ -77,7 +79,7 @@ export const Chat: React.FC = () => {  // O chat será exibido caso haja uma
 				showContexts ? <>
 					<div className={left_div}>
 						<OpenButtom onClick={() => setShowContexts(!showContexts)}
-							className="h-10 self-start" />
+							className="h-10 mt-5 self-start" />
 						<Context_to_chat className="grow overflow"
 							context_list={context_list.reverse()}
 							context_index={currentContextIndex}
@@ -86,18 +88,21 @@ export const Chat: React.FC = () => {  // O chat será exibido caso haja uma
 						<div className={border} />
 						<Options />
 					</div>
-					<div className={right_div} />
+					<div className={vertical_border} />
 				</> : <CloseButtom className="h-10 self-start mt-5 mx-5"
 					onClick={() => setShowContexts(!showContexts)} />
 			}
-			<ChatPrompt currentContext={currentContext} />
+
+			<div className={showContexts? right_div : right_div_full}>
+				<ChatPrompt currentContext={currentContext} />
+			</div>
 		</div> :
 		<div className={outer_div + " justify-center h-screen"}>
 			{
 				!showContexts ? <>
 					<div className={left_div}>
 						<OpenButtom onClick={() => setShowContexts(!showContexts)}
-							className="h-10 self-center" />
+							className="h-[10%] pt-5 self-center" />
 						<Context_to_chat className="grow"
 							context_list={context_list.reverse()}
 							context_index={currentContextIndex}
@@ -107,13 +112,13 @@ export const Chat: React.FC = () => {  // O chat será exibido caso haja uma
 					</div>
 				</> :
 					<div className="flex flex-col w-full h-screen px-5">
-						<CloseButtom className="h-10 mt-5 self-center"
+						<CloseButtom className="h-10 pt-5 self-center h-[10%]"
 							onClick={() => setShowContexts(!showContexts)} />
 						<ChatPrompt currentContext={currentContext}
-					     isMobile />
+							isMobile />
 					</div>
 			}
-				</div>
+		</div>
 	);
 }
 

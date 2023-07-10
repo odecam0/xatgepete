@@ -4,10 +4,13 @@ import ReactLoading from 'react-loading';
 import { Accounts } from 'meteor/accounts-base';
 import { useTracker } from 'meteor/react-meteor-data';
 
+import {ReactComponent as GoogleIcon} from '../../icons/icons8-google';
+
 // Este componente possuirá 3 telas possíveis:
 //  O formulário para login
 //  O formuĺário para registro
 //  Um formulário para confirmar o código enviado por email
+
 
 export const SignInForm: React.FC = () => {
     const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
@@ -338,10 +341,10 @@ const LoginWithGoogle : React.FC = () => {
     return (
         <>
         {
-            serviceOn ?
-                <button type="button" className="border-solid border-black border-2 p-4 rounded-lg" onClick={handleLogin}>
-                    Conecte-se usando o Google
-                </button> : <div />
+                serviceOn ?
+                    <button type="button" className="border-solid border-black border-2 p-4 rounded-lg flex gap-5 items-center" onClick={handleLogin}>
+                        Conecte-se usando o Google <GoogleIcon className="self-end"/>
+                    </button> : <div />
         }
         </>
     );

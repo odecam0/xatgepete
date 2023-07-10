@@ -77,8 +77,10 @@ var Chat = function () {
     };
     // Os estilos para as tags de JSX utilizando tailwindCSS
     var outer_div = "flex grow h-full";
-    var left_div = "flex flex-col items-center pt-5 pb-5 bg-white gap-5 mx-5 h-full";
-    var right_div = "border-l-2 border-slate-300 my-10";
+    var left_div = "xl:w-1/6 sm:w-2/6 w-5/6 flex flex-col items-center pb-5 bg-white gap-5 mx-5 h-full ";
+    var right_div = "xl:w-5/6 sm:w-4/6 w-5/6 bg-white flex flex-col pt-8 pb-4 px-2 h-[90%] sm:h-full";
+    var right_div_full = "sm:w-full w-5/6 bg-white flex flex-col pt-8 pb-4 px-2 h-[90%] sm:h-full";
+    var vertical_border = "border-l-2 border-slate-300 my-10";
     var border = "border-b-2 border-slate-300 w-full";
     // O componente Context_to_chat recebe a lista de contextos (context_list)
     // o indice atual ( currentContextIndex ) e o callback para atualizar o contexto
@@ -87,20 +89,21 @@ var Chat = function () {
         react_1["default"].createElement("div", { className: outer_div },
             showContexts ? react_1["default"].createElement(react_1["default"].Fragment, null,
                 react_1["default"].createElement("div", { className: left_div },
-                    react_1["default"].createElement(OpenButtom, { onClick: function () { return setShowContexts(!showContexts); }, className: "h-10 self-start" }),
+                    react_1["default"].createElement(OpenButtom, { onClick: function () { return setShowContexts(!showContexts); }, className: "h-10 mt-5 self-start" }),
                     react_1["default"].createElement(Context_to_chat_1.Context_to_chat, { className: "grow overflow", context_list: context_list.reverse(), context_index: currentContextIndex, onClick: selectCurrentContextFromButtom }),
                     react_1["default"].createElement("div", { className: border }),
                     react_1["default"].createElement(Options_1.Options, null)),
-                react_1["default"].createElement("div", { className: right_div })) : react_1["default"].createElement(CloseButtom, { className: "h-10 self-start mt-5 mx-5", onClick: function () { return setShowContexts(!showContexts); } }),
-            react_1["default"].createElement(ChatPrompt_1.ChatPrompt, { currentContext: currentContext })) :
+                react_1["default"].createElement("div", { className: vertical_border })) : react_1["default"].createElement(CloseButtom, { className: "h-10 self-start mt-5 mx-5", onClick: function () { return setShowContexts(!showContexts); } }),
+            react_1["default"].createElement("div", { className: showContexts ? right_div : right_div_full },
+                react_1["default"].createElement(ChatPrompt_1.ChatPrompt, { currentContext: currentContext }))) :
         react_1["default"].createElement("div", { className: outer_div + " justify-center h-screen" }, !showContexts ? react_1["default"].createElement(react_1["default"].Fragment, null,
             react_1["default"].createElement("div", { className: left_div },
-                react_1["default"].createElement(OpenButtom, { onClick: function () { return setShowContexts(!showContexts); }, className: "h-10 self-center" }),
+                react_1["default"].createElement(OpenButtom, { onClick: function () { return setShowContexts(!showContexts); }, className: "h-[10%] pt-5 self-center" }),
                 react_1["default"].createElement(Context_to_chat_1.Context_to_chat, { className: "grow", context_list: context_list.reverse(), context_index: currentContextIndex, onClick: selectCurrentContextFromButtomMobile }),
                 react_1["default"].createElement("div", { className: border }),
                 react_1["default"].createElement(Options_1.Options, null))) :
             react_1["default"].createElement("div", { className: "flex flex-col w-full h-screen px-5" },
-                react_1["default"].createElement(CloseButtom, { className: "h-10 mt-5 self-center", onClick: function () { return setShowContexts(!showContexts); } }),
+                react_1["default"].createElement(CloseButtom, { className: "h-10 pt-5 self-center h-[10%]", onClick: function () { return setShowContexts(!showContexts); } }),
                 react_1["default"].createElement(ChatPrompt_1.ChatPrompt, { currentContext: currentContext, isMobile: true }))));
 };
 exports.Chat = Chat;
