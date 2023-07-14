@@ -78,18 +78,15 @@ var ChatPrompt = function (props) {
             if (p.from == 'gpt') {
                 className = 'self-end bg-white border-r-2 border-black pr-3';
             }
-            return (react_1["default"].createElement("div", { key: i, className: className },
-                react_1["default"].createElement("text", null, p.text)));
+            return (react_1["default"].createElement("div", { key: i, className: className }, p.text));
         }));
     };
     // So user cannot prompt anything while system is showing the gpt response
     var _b = (0, react_1.useState)(false), gptIsResponding = _b[0], setGptIsResponding = _b[1];
-    // Ui, aqui vai ser complicado de adaptar pro database.
-    // Penso que devo manter a mesma lógica, porem apenas dar um update no banco de dados
-    var trigger_gpt_response = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var trigger_gpt_response = function (prompt_data) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             setGptIsResponding(true);
-            meteor_1.Meteor.call('insertGPTMessageInContext', props.currentContext, function () { return (setGptIsResponding(false)); });
+            meteor_1.Meteor.call('insertGPTMessageInContext', props.currentContext, prompt_data, function () { return (setGptIsResponding(false)); });
             return [2 /*return*/];
         });
     }); };
@@ -101,12 +98,14 @@ var ChatPrompt = function (props) {
             meteor_1.Meteor.call('updateContextName', props.currentContext, prompt_data.slice(0, 16));
         }
         meteor_1.Meteor.call('insertMessageInContext', { from: 'user', text: prompt_data }, props.currentContext);
+        trigger_gpt_response(prompt_data);
         set_prompt_data('');
-        trigger_gpt_response();
     };
     var canPrompt = function () {
         return (!gptIsResponding && (props.currentContext != ''));
     };
+    var activeSendButtonStyle = "bg-white rounded-lg p-2 border-black border-2 self-center w-fit";
+    var inactiveSendButtonStyle = "bg-white rounded-lg p-2 border-slate-400 text-slate-400 border-2 self-center w-fit";
     // Return that renders
     // sm:h-screen is related to mediaquery on Chat.tsx
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
@@ -115,6 +114,6 @@ var ChatPrompt = function (props) {
             react_1["default"].createElement("div", { id: "anchor" })),
         react_1["default"].createElement("form", { onSubmit: handleSubmit, className: "flex w-full flex-col gap-3" },
             react_1["default"].createElement("input", { className: 'grow px-2 border-solid border-b-2 border-black bg-white w-full', type: 'text', value: prompt_data, onChange: handleChange, disabled: !canPrompt() }),
-            react_1["default"].createElement("input", { className: 'bg-white rounded-lg p-2 border-black border-2 self-center w-fit', type: 'submit', value: 'Enviar', disabled: !canPrompt() }))));
+            react_1["default"].createElement("input", { className: canPrompt() ? activeSendButtonStyle : inactiveSendButtonStyle, type: 'submit', value: 'Enviar', disabled: !canPrompt() }))));
 };
 exports.ChatPrompt = ChatPrompt;

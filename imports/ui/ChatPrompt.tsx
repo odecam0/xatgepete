@@ -30,7 +30,7 @@ export const ChatPrompt : React.FC = (props) => {
 
 			return (
 				<div key={i} className={className}>
-					<text>{p.text}</text>
+					{p.text}
 				</div>
 			);
 		}));
@@ -39,12 +39,10 @@ export const ChatPrompt : React.FC = (props) => {
 	// So user cannot prompt anything while system is showing the gpt response
 	const [gptIsResponding, setGptIsResponding] = useState<boolean>(false);
 
-	// Ui, aqui vai ser complicado de adaptar pro database.
-	// Penso que devo manter a mesma lógica, porem apenas dar um update no banco de dados
-	const trigger_gpt_response = async () => {
+	const trigger_gpt_response = async (prompt_data:string) => {
 		setGptIsResponding(true);
 
-		Meteor.call('insertGPTMessageInContext', props.currentContext, () => (setGptIsResponding(false)));
+		Meteor.call('insertGPTMessageInContext', props.currentContext, prompt_data, () => (setGptIsResponding(false)));
 	};
 
 	const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
@@ -57,14 +55,17 @@ export const ChatPrompt : React.FC = (props) => {
 		}
 
 		Meteor.call('insertMessageInContext', {from:'user', text:prompt_data}, props.currentContext);
-		set_prompt_data('');
 
-		trigger_gpt_response();
+		trigger_gpt_response(prompt_data);
+		set_prompt_data('');
 	};
 
 	const canPrompt = () => {
 		return (!gptIsResponding && (props.currentContext != ''))
 	}
+
+	const activeSendButtonStyle = "bg-white rounded-lg p-2 border-black border-2 self-center w-fit";
+	const inactiveSendButtonStyle = "bg-white rounded-lg p-2 border-slate-400 text-slate-400 border-2 self-center w-fit";
 
 	// Return that renders
 	// sm:h-screen is related to mediaquery on Chat.tsx
@@ -77,7 +78,7 @@ export const ChatPrompt : React.FC = (props) => {
 			<form onSubmit={handleSubmit} className="flex w-full flex-col gap-3" >
 				<input className='grow px-2 border-solid border-b-2 border-black bg-white w-full'
 					type='text' value={prompt_data} onChange={handleChange} disabled={!canPrompt()} />
-				<input className='bg-white rounded-lg p-2 border-black border-2 self-center w-fit'
+			<input className={canPrompt()? activeSendButtonStyle : inactiveSendButtonStyle}
 					type='submit' value='Enviar' disabled={!canPrompt()} />
 			</form>
 			</>

@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { Mongo } from 'meteor/mongo';
 
+const { Configuration, OpenAIApi } = require("openai");
+
 // Login services configuration
 import { ServiceConfiguration  } from 'meteor/service-configuration';
 //
@@ -20,6 +22,7 @@ console.log(process.env.ROOT_URL);
 
 const Contexts = new Mongo.Collection('Contexts');
 const Messages = new Mongo.Collection('Messages');
+const Keys     = new Mongo.Collection('Keys');
 
 import nodemailer from "nodemailer";
 const Emails = new Mongo.Collection('Emails');
@@ -97,21 +100,41 @@ Meteor.methods({
     // currentContext will have the id of the currentContext document
     Messages.insert({contextID: currentContext, ...messageObj});
   },
-  async insertGPTMessageInContext(currentContext) {
-    const message_to_add = 'Ainda não tem o GPT respondendo';
-    const message_to_add_list = message_to_add.split(' ');
+  async insertGPTMessageInContext(currentContext, prompt_data) {
+    if (Keys.find({ userId: this.userId }).count() == 0) {
+      Messages.insert({ from: 'gpt', text: "Você não adicionou uma chave para acessar o GPT", contextID: currentContext })
+    } else {
+      const APIKEY = Keys.find({userId: this.userId}).fetch()[0].apiKey;
 
-    let message_to_send = '';
-    const message_id = Messages.insert({from:'gpt', text:message_to_send, contextID:currentContext})
+      const configuration = new Configuration({
+        apiKey: APIKEY,
+        basePath: "https://api.openai.com/v1/chat/"
+      });
+      const openai = new OpenAIApi(configuration);
 
-    for (const word in message_to_add_list) {
-      message_to_send = message_to_send + ' ' + message_to_add_list[word];
-      Messages.update({_id: message_id}, {$set : {text:message_to_send}})
-      await new Promise(r => setTimeout(r, 200));
+      await openai.createCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{ "role": "user", content: prompt_data }],
+        max_tokens: 4000
+      }).then((thing) => {
+        const gptMessage = thing.data.choices[0].message.content;
+        Messages.insert({ from: 'gpt', text: gptMessage, contextID: currentContext })
+      }).catch((e) => {
+        Messages.insert({ from: 'gpt', text: e.response.status + ' ' + e.response.statusText, contextID: currentContext })
+      });
     }
   },
   updateContextName(currentContext, newName) {
     Contexts.update({_id:currentContext} , {$set: {title: newName}});
+  },
+  setUserApiKey(apiKey) {
+    if (this.userId){
+      if (Keys.find({userId: this.userId}).count() == 0) {
+        Keys.insert({userId: this.userId, apiKey: apiKey});
+      } else {
+        Keys.update({userId: this.userId}, {$set: {apiKey: apiKey}});
+      }
+    }
   }
 });
 
@@ -122,6 +145,9 @@ Meteor.startup(async () => {
   Meteor.publish('messages', function (currentContext) {
     return Messages.find({contextID: currentContext})
   });
+  Meteor.publish('key', function () {
+    return Keys.find({userId: this.userId})
+  })
 
  if (!Accounts.findUserByUsername('teste')) {
     Accounts.createUser({
