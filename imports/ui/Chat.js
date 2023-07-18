@@ -102,8 +102,8 @@ var Chat = function () {
                 react_1["default"].createElement(Context_to_chat_1.Context_to_chat, { className: "grow", context_list: context_list.reverse(), context_index: currentContextIndex, onClick: selectCurrentContextFromButtomMobile }),
                 react_1["default"].createElement("div", { className: border }),
                 react_1["default"].createElement(Options_1.Options, null))) :
-            react_1["default"].createElement("div", { className: "flex flex-col w-full h-screen px-5" },
-                react_1["default"].createElement(CloseButtom, { className: "h-10 pt-5 self-center h-[10%]", onClick: function () { return setShowContexts(!showContexts); } }),
+            react_1["default"].createElement("div", { className: "flex flex-col w-full h-screen px-5 pb-5" },
+                react_1["default"].createElement(CloseButtom, { className: "h-10 pt-5 mb-5 self-center h-[10%]", onClick: function () { return setShowContexts(!showContexts); } }),
                 react_1["default"].createElement(ChatPrompt_1.ChatPrompt, { currentContext: currentContext, isMobile: true }))));
 };
 exports.Chat = Chat;

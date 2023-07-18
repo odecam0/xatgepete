@@ -111,8 +111,8 @@ export const Chat: React.FC = () => {  // O chat será exibido caso haja uma
 						<Options />
 					</div>
 				</> :
-					<div className="flex flex-col w-full h-screen px-5">
-						<CloseButtom className="h-10 pt-5 self-center h-[10%]"
+					<div className="flex flex-col w-full h-screen px-5 pb-5">
+						<CloseButtom className="h-10 pt-5 mb-5 self-center h-[10%]"
 							onClick={() => setShowContexts(!showContexts)} />
 						<ChatPrompt currentContext={currentContext}
 							isMobile />
