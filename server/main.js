@@ -34,6 +34,19 @@ transporter = nodemailer.createTransport({
   }
 });
 
+//  [{ "role": "user", content: prompt_data }],
+const getUserMessagesGivenCurrentContext = (currentContext) => {
+  return Messages.find({contextID: currentContext}).fetch().map((e) => {
+    if (e.from == 'user') {
+      return({"role": "user", "content": e.text});
+    } else if (e.from == 'gpt') {
+      return({"role": "assistant", "content": e.text});
+    } else {
+      return;
+    }
+  })
+}
+
 Meteor.methods({
   registerAccount(username, email, password) {
     if (!Accounts.findUserByUsername(username)) {
@@ -104,7 +117,7 @@ Meteor.methods({
     if (Keys.find({ userId: this.userId }).count() == 0) {
       Messages.insert({ from: 'gpt', text: "Você não adicionou uma chave para acessar o GPT", contextID: currentContext })
     } else {
-      const APIKEY = Keys.find({userId: this.userId}).fetch()[0].apiKey;
+      const APIKEY = Keys.find({ userId: this.userId }).fetch()[0].apiKey;
 
       const configuration = new Configuration({
         apiKey: APIKEY,
@@ -112,15 +125,18 @@ Meteor.methods({
       });
       const openai = new OpenAIApi(configuration);
 
+      const messages = getUserMessagesGivenCurrentContext(currentContext);
+
       await openai.createCompletion({
         model: "gpt-3.5-turbo",
-        messages: [{ "role": "user", content: prompt_data }],
-        max_tokens: 4000
+        messages: messages,
+        max_tokens: 2200
       }).then((thing) => {
         const gptMessage = thing.data.choices[0].message.content;
         Messages.insert({ from: 'gpt', text: gptMessage, contextID: currentContext })
       }).catch((e) => {
-        Messages.insert({ from: 'gpt', text: e.response.status + ' ' + e.response.statusText, contextID: currentContext })
+        console.log(e);
+        Messages.insert({ from: 'gpt', text: e.response.status + ' ' + e.response.statusText, contextID: currentContext });
       });
     }
   },
