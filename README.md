@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
 
-Esta hospedado gratuitamente em: https://xatgepete.meteorapp.com/
+Está hospedado gratuitamente em: https://xatgepete.meteorapp.com/
 
 Este projeto foi desenvolvido como um trabalho para a disciplina de 'Programação para Internet'.
 A ideia foi de recriar a interface do ChatGPT,
