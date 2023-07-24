@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+
 Esta hospedado gratuitamente em: https://xatgepete.meteorapp.com/
 
 Este projeto foi desenvolvido como um trabalho para a disciplina de 'Programação para Internet'.
@@ -6,10 +8,8 @@ permitindo experimentar com frameworks de desenvolvimento de interfaces,
 acesso ao banco de dados e
 consumo de APIs.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
-
 Ferramentas utilizadas:
-- typescript <i class="devicon-javascript-plain colored"></i>
+- typescript <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
 - reactJS
 - tailwindCSS
 - nodejs
